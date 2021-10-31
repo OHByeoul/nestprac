@@ -5,8 +5,34 @@ import { Cat, CatType } from "./app.model";
 const app: express.Express = express(); // app = express의 인스턴스
 const port: number = 8000;
 
-app.get("/", (req: express.Request, res: express.Response) => {
-  res.send({ cats: Cat });
+app.use((req, res, next) => {
+  //use 메소드를 사용해서 미들웨어를 작성함. 해당 미들웨어 위치에 따라 요청이 미들웨어를 통과할수도 있고, 적용이 안 될 수도 있다.
+  console.log(req.rawHeaders[3]);
+  next(); // 이게 없으면 미들웨어에서 라우터로 요청이 이동되지 않는다.
+});
+
+/**
+ * 고양이 전체 조회
+ */
+app.get("/cats", (req, res) => {
+  const cats = Cat;
+  try {
+    res.status(200).send({
+      success: true,
+      data: { cats },
+    });
+  } catch (error) {
+    res.status(400).send({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+app.use((req, res, next) => {
+  res.send({
+    error: "404 not found",
+  });
 });
 
 app.listen(port, () => {
