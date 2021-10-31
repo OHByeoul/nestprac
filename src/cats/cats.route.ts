@@ -57,4 +57,57 @@ router.post("/cats/create", (req, res) => {
   }
 });
 
+/**
+ * 고양이 업데이트
+ */
+router.put("/cats/:id", (req, res) => {
+  try {
+    const params = req.params;
+    const body = req.body;
+    Cat.forEach((cat) => {
+      if (cat.id == params.id) {
+        cat = body;
+      }
+    });
+
+    res.status(200).send({
+      success: true,
+      data: {
+        body,
+      },
+    });
+  } catch (error) {
+    res.status(400).send({
+      sucess: false,
+      error: error.message,
+    });
+  }
+});
+
+/**
+ * 부분적 업데이트
+ */
+router.patch("/cats/:id", (req, res) => {
+  try {
+    const params = req.params;
+    const body = req.body;
+    Cat.forEach((cat) => {
+      if (cat.id == params.id) {
+        cat = { ...cat, ...body };
+      }
+    });
+
+    res.status(200).send({
+      success: true,
+      data: {
+        body,
+      },
+    });
+  } catch (error) {
+    res.status(400).send({
+      sucess: false,
+      error: error.message,
+    });
+  }
+});
 export default router;
